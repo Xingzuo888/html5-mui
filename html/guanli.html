@@ -1,0 +1,138 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init({
+				// subpages:[//首先加载首页
+				// {
+				// 	url:'home.html',
+				// 	id:'home.html',
+				// 	styles:{
+				// 		top:'0px',
+				// 		bottom:'50px'
+				// 	}
+				// }],
+				// preloadPages:[//预加载其他页面
+				// {
+				// 	url:'contact.html',
+				// 	id:'contact.html',
+				// 	styles:{
+				// 		top:'0px',
+				// 		bottom:'50px'
+				// 	}
+				// }]
+				
+			});
+			
+			
+			mui.plusReady(function(){
+				//获取当前页面所属的Webview窗口对象
+				var self = plus.webview.currentWebview();
+				var opener = self.opener();
+				opener.close();
+				var floatw = null;
+				// 创建子页面，首个选项卡页面显示，其它均隐藏；
+				
+					
+					
+					floatw = plus.webview.create("menu.html", "menu.html", {
+						background: 'transparent',
+						zindex: 10,
+				   });
+					document.getElementById('menu').addEventListener('tap',  function() {
+						if(floatw) { // 避免快速多次点击创建多个窗口
+							//floatw.show("fade-in",300);
+							plus.webview.show("menu.html","fade-in",300);
+						} else {
+							floatw = plus.webview.create("menu.html", "menu", {
+								background: 'transparent',
+								zindex: 10,
+							});
+							floatw.show("fade-in",300);
+						}
+					});
+				
+				//设置默认打开首页显示的子页序号
+				var Index = 0;
+				//把子页面路径写在数组里面
+				var subpages = ['home.html', 'xiangji.html', 'contact.html']
+				for(var i = 0; i < 3; i++) {
+					//创建webview子页
+					var sub = plus.webview.create(
+						subpages[i], //子页url
+						subpages[i], //子页id
+						{
+							top: '45px',
+							bottom: '50px',
+							scrollIndicator: "none" //隐藏滚动条
+						}
+					);
+					//如果不是我们设置的子页就隐藏
+					if(i != Index) {
+						sub.hide()
+					}
+					//将webview对象填充到窗口
+					self.append(sub)
+				}
+ 
+				//当前激活选项
+				var activeTab = subpages[Index]
+				var targetTab;
+				mui('#nav').on('tap', 'a', function(e) {
+					//获取子页面的id
+					var j = this.getAttribute('id')
+					targetTab = subpages[j]
+					if(activeTab == targetTab) {
+						return
+					}
+					var title = document.getElementById('title');
+					if(j==0){
+						title.innerHTML='学生信息';
+					}else if(j==1){
+						title.innerHTML='相机使用';
+					}else if(j==2){
+						title.innerHTML='个人信息';
+					}
+					
+					//显示目标选项卡
+					plus.webview.show(targetTab)
+					//隐藏当前选项卡
+					plus.webview.hide(activeTab)
+					//更改当前活跃选项卡
+					activeTab = targetTab
+				})
+			})
+			
+		</script>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<label id="title" class="mui-title">学生信息</label>
+			<button id="menu" class="mui-btn mui-btn-blue mui-btn-link mui-pull-right mui-icon mui-icon-plusempty" style="margin-top: -10px;"></button>
+			
+		</header>
+		<nav class="mui-bar mui-bar-tab" id="nav">
+			<a id="0" class="mui-tab-item mui-active">
+				<span class="mui-icon mui-icon-home"></span>
+				<span class="mui-tab-label">首页</span>
+			</a>
+			<a id="1" class="mui-tab-item">
+				<span class="mui-icon mui-icon-camera"></span>
+				<span class="mui-tab-label">相机</span>
+			</a>
+			<a id="2" class="mui-tab-item">
+				<span class="mui-icon mui-icon-contact"></span>
+				<span class="mui-tab-label">我的</span>
+			</a>
+		</nav>
+	</body>
+
+</html>

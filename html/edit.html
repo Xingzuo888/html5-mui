@@ -1,0 +1,245 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<script src="../js/mui.js"></script>
+		<script type="text/javascript">
+			mui.init({
+				swipeBack:true //启用右滑关闭功能
+			})
+			
+			// mui.plusReady(function () {
+			// 	sid = plus.storage.getItem("student_id");
+			//     var sno = plus.storage.getItem("student_sno");
+			//     var sname = plus.storage.getItem("student_sname");
+			//     var sex = plus.storage.getItem("student_sex");
+			// 	console.log("id--"+sid);
+			//     console.log("sno--"+sno);
+			//     console.log("sname--"+sname);
+			//     console.log("sex--"+sex);
+			// 	document.getElementById('sno').value=sno;
+			// 	document.getElementById('sname').value=sname;
+			// 	var sexs = document.getElementsByName('sexs');
+			// 	console.log(sexs.length)
+			// 	for(var i=0;i<sexs.length;i++){
+			// 		console.log(sexs[i].value)
+			// 		if(sexs[i].value==sex){
+			// 			sexs[i].checked=true;
+			// 			break;
+			// 		}
+			// 	}
+			// })
+			
+			
+			mui.plusReady(function () {
+			    var self=plus.webview.currentWebview();
+				var sid = self.sid;
+			    var sno = document.getElementById('sno');
+			    var sname = document.getElementById('sname');
+				var sexs = document.getElementsByName('sexs');
+				if(self.sno!=null&&self.sname!=null){
+					sno.value = self.sno;
+					sname.value = self.sname;
+					for(var i=0;i<sexs.length;i++){
+						console.log(sexs[i].value)
+						if(sexs[i].value==self.sex){
+							sexs[i].checked=true;
+							break;
+						}
+					}
+					document.getElementById('add').classList.add("mui-hidden");
+					document.getElementById('update').classList.remove("mui-hidden");
+					document.getElementById('delete').classList.remove("mui-hidden");
+				}else{
+					document.getElementById('add').classList.remove("mui-hidden");
+					document.getElementById('update').classList.add("mui-hidden");
+					document.getElementById('delete').classList.add("mui-hidden");
+				}
+				
+				// console.log(sid);
+			 //    console.log(sno);
+			 //    console.log(sname);
+			 //    console.log(sex);
+			 
+				 document.getElementById('add').addEventListener('tap',function(){
+					var sex;
+					for(var i=0;i<sexs.length;i++){
+						if(sexs[i].checked){
+							sex=sexs[i].value;
+							console.log(sex);
+							break;
+						}
+					}
+					console.log(sid);
+					console.log(sno.value);
+					console.log(sname.value);
+					console.log(sex);
+					if(sno.value!=null&&sname.value!=null&&sex!=null){
+						mui.post('http://10.0.2.2:8080/student/C_insert',{
+								sno:sno.value,
+								sname:sname.value,
+								sex:sex
+							},function(data){
+								var d = data;
+								if(d.status==0){
+									mui.alert(d.message,'添加信息','确定',function (e) {
+									   e.index;
+									   plus.webview.currentWebview().close();
+									},'div')
+								}else{
+									mui.alert(d.message,'添加信息','知道了',function (e) {
+									   e.index;
+									},'div')
+								}
+							},'json'
+						);
+					}else{
+						mui.alert('学号、姓名、性别不能为空！','添加信息','知道了',function (e) {
+						   e.index
+						},'div')
+					}
+					
+				 })
+				
+				document.getElementById('update').addEventListener('tap',function(){
+					var sex;
+					for(var i=0;i<sexs.length;i++){
+						if(sexs[i].checked){
+							sex=sexs[i].value;
+							console.log(sex);
+							break;
+						}
+					}
+					console.log(sid);
+					console.log(sno.value);
+					console.log(sname.value);
+					console.log(sex);
+					if(sno.value!=null&&sname.value!=null&&sex!=null){
+						mui.post('http://10.0.2.2:8080/student/C_update',{
+								id:sid,
+								sno:sno.value,
+								sname:sname.value,
+								sex:sex
+							},function(data){
+								var d = data;
+								if(d.status==0){
+									mui.alert(d.message,'修改信息','确定',function (e) {
+									   e.index;
+									   plus.webview.currentWebview().close();
+									},'div')
+								}else{
+									mui.alert(d.message,'修改信息','知道了',function (e) {
+									   e.index;
+									},'div')
+								}
+							},'json'
+						);
+					}else{
+						mui.alert('学号、姓名、性别不能为空！','修改信息','知道了',function (e) {
+						   e.index
+						},'div')
+					}
+					
+				})
+				
+				document.getElementById('delete').addEventListener('tap',function(){
+					var sex;
+					for(var i=0;i<sexs.length;i++){
+						if(sexs[i].checked){
+							sex=sexs[i].value;
+							console.log(sex);
+							break;
+						}
+					}
+					console.log(sid);
+					console.log(sno.value);
+					console.log(sname.value);
+					console.log(sex);
+					
+					mui.post('http://10.0.2.2:8080/student/C_delete',{
+							id:sid
+						},function(data){
+							var d = data;
+							if(d.status==0){
+								mui.alert(d.message,'删除信息','确定',function (e) {
+								   e.index;
+								   plus.webview.currentWebview().close();
+								},'div')
+							}else{
+								mui.alert(d.message,'删除信息','知道了',function (e) {
+								   e.index;
+								},'div')
+							}
+						},'json'
+					);
+				})
+			})
+			
+			
+			// window.addEventListener("edit",function(event){
+			// 	var sno = event.sno;
+			// 	var sname = event.sname;
+			// 	var sex = event.sex;
+			// 	console.log(sno);
+			// 	console.log(sname);
+			// 	console.log(sex);
+			// })
+		</script>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">编辑信息</h1>
+		</header>
+		<div class="mui-content">
+			<form class="form mui-input-group" >
+				<div class="">
+					<label class="title mui-row">学生信息</label>
+				</div>
+				<div class="mui-input-row">
+					<label>学号：</label>
+					<input id="sno" type="text" placeholder="输入学号" class="mui-input-clear" />
+				</div>
+				<div class="mui-input-row">
+					<label>姓名：</label>
+					<input id="sname" type="text" placeholder="输入姓名" class="mui-input-clear" />
+				</div>
+				<div class="mui-input-row">
+					<label style="float: left; width: 35%;">性别：</label>
+					<div style="float: left; width: 15%;" class="mui-radio mui-left">
+						<label>男</label>
+						<input name="sexs" type="radio" value="m" />
+					</div>
+					<div style="float: left; width: 15%;" class="mui-radio mui-left">
+						<label>女</label>
+						<input name="sexs" type="radio" value="w" />
+					</div>
+				</div>
+				<button id="add" type="button" class="mui-btn mui-btn-primary btn">添加</button>
+				<button id="update" type="button" class="mui-btn mui-btn-success btn">修改</button>
+				<button id="delete" type="button" class="mui-btn mui-badge-danger btn">删除</button>
+			</form>
+		</div>
+	</body>
+	<style>
+		.form{
+			text-align: center;
+			font-size: 20px;
+			margin: 10px;
+			padding: 30px;
+		}
+		.title{
+			font-size: 30px;
+			margin: 50px;
+		}
+		.btn{
+			width: 100px;
+			margin: 30px;
+		}
+	</style>
+</html>

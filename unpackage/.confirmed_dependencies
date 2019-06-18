@@ -1,0 +1,18 @@
+{
+	"index.html": {
+		"refer": [
+			"html/guanli.jsp",
+			"html/guanli.html",
+			"index.html"
+		]
+	},
+	"html/guanli.html": {
+		"resources": [
+			"html/home.html"
+		],
+		"refer": [
+			"html/home.html",
+			"html/contact.html"
+		]
+	}
+}

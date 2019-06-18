@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+	<script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/mui.min.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+    
+    <style>
+    	#login{
+    		text-align: center;
+			margin-top: 300px;
+			background-color: rgba(0,0,0,0.5);
+			border: none;
+    	}
+		#ba{
+			
+			background-image: url(img/backgrount.jpg);
+		}
+    </style>
+</head>
+<body id="ba">
+	
+	<header class="mui-bar mui-bar-nav" style="background-color: transparent;">
+		<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		<h1 class="mui-title">登录</h1>
+	</header>
+	<div class="">
+	<form id="login"  class="mui-input-group">
+		<div class="mui-input-row">
+			<label>用户名：</label>
+			<input id="user_code" type="text" class="mui-input-clear" placeholder="请输入用户名" />
+		</div>
+		<div class="mui-input-row">
+			<label>密码：</label>
+			<input id="user_password" type="password" class="mui-input-password" placeholder="请输入密码" />
+		</div>
+		
+			<button style="margin: 15px;" type="button" class="mui-btn-blue" onclick="checklogin()">登录</button>
+		
+	</form>
+	<!-- <button onclick="btn3()">webView.open()</button><br /> -->
+	</div>
+	
+	<script type="text/javascript" charset="utf-8">
+      	mui.init();
+		
+		mui.plusReady(function () {
+		    var self = plus.webview.currentWebview();
+		    var opener = self.opener();
+		    opener.opener().close();
+		})
+		
+      	function checklogin(){
+      		var check;
+	      	mui("#login input").each(function() {
+	      		
+				//若当前input为空，则alert提醒 
+				if(!this.value || this.value.trim() == "") {
+				    var label = this.previousElementSibling;
+				    mui.alert(label.innerText + "不允许为空");
+				    check = false;
+				    return false;
+				}else{
+					check=true;
+				}
+				}); //校验通过，继续执行业务逻辑 
+			if(check){
+			    login();
+			}
+      	}
+		
+		
+		function login(){
+			var user_code = document.getElementById('user_code').value;
+			console.log(user_code);
+			var user_password = document.getElementById('user_password').value;
+			console.log(user_password);
+			mui.post('http://10.0.2.2:8080/user/C_query',
+			{user_code:user_code,
+			user_password:user_password},
+			function(data){
+				console.log("+++");
+				if(data.status==0){
+					btn3();
+					plus.storage.setItem('name',data.user_name);
+					plus.storage.setItem('code',data.user_code);
+				}else if(data.status== -1){
+					mui.alert(data.error_message);
+				}
+			},'json');
+		}
+		
+      	
+      	function btn3(){
+   			var wvw = plus.webview.open(
+   				"html/guanli.html",
+   				"guanli.html",
+   				{},
+   				"slide-in-bottom"
+   			);
+   		}
+		
+    </script>
+</body>
+</html>

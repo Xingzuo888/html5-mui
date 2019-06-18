@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init({
+				swipeBack:true //启用右滑关闭功能
+			})
+			// mui.post('http://10.0.2.2:8080/user/C_query',
+			// {user_code:"m0001",
+			// user_password:"123"},
+			// function(data){
+			// 	var d=eval(data);
+			// 	var sname = document.getElementById('sname');
+			// 	var sno = document.getElementById('sno');
+			// 	// for(var i in d){
+			// 	// console.log("****")
+			// 		sname.innerHTML=d.user_name;
+			// 		sno.innerHTML=d.user_code;
+			// 	// }
+			// 	
+			// },'json');
+			mui.plusReady(function () {
+			    var sname = document.getElementById('sname');
+				var sno = document.getElementById('sno');
+				var n = plus.storage.getItem('name');
+				var c = plus.storage.getItem('code');
+				sname.innerHTML=n;
+				sno.innerHTML=c;
+				console.log(n);
+				console.log(c);
+				
+				document.getElementById('register').addEventListener('tap',function(){
+					mui.openWindow('../index.html','index.html',{});
+				});
+				document.getElementById('out').addEventListener('tap',function(){
+					var self = plus.webview.currentWebview();
+					self.opener().close();
+				})
+			})
+			  
+		</script>
+		<div class="mui-content">
+			<ul class="mui-table mui-table-view">
+				<li id="" class="mui-table-view-cell">
+					<label>姓名：</label>
+					<label id="sname"></label>
+				</li>
+				<div id="" class="mui-table-view-cell">
+					<label>代号：</label>
+					<label id="sno"></label>
+				</div>
+			</ul>
+			
+			<button id="register" type="button" class="mui-btn mui-btn-warning btn">注销登录</button>
+			<button id="out" type="button" class="mui-btn mui-btn-royal mui-btn-outlined btn">退出</button>
+		</div>
+		<style>
+			.btn{
+				width: 100px;
+				margin: 80px;
+			}
+		</style>
+	</body>
+
+</html>

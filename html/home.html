@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		
+		<div id="refreshContainer" class="mui-content mui-scroll-wrapper">
+			<div class="mui-scroll mui-h1">
+				<ul id="studentDataShow" class="mui-table-view mui-table-view-chevron">
+					
+				</ul>
+			</div>
+			
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init({
+			  swipeBack:true, //启用右滑关闭功能
+			 //  preloadPages:[
+				// {
+				//   url:'edit.html',
+				//   id:'edit.html'
+				// }
+			 //  ]
+		
+				pullRefresh : {
+					container:"#refreshContainer",//下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
+					down : {
+					  height:50,//可选,默认50.触发下拉刷新拖动距离,
+					  auto: true,//可选,默认false.首次加载自动下拉刷新一次
+					  contentdown : "下拉可以刷新",//可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
+					  contentover : "释放立即刷新",//可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
+					  contentrefresh : "正在刷新...",//可选，正在刷新状态时，下拉刷新控件上显示的标题内容
+					  callback :pullfresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+					}
+				  }
+			});
+			
+			var datas;
+			
+			function pullfresh() {
+				 //业务逻辑代码，比如通过ajax从服务器获取新数据；
+				 mui.get('http://10.0.2.2:8080/student/C_queryStudent',function(data){
+				 	var d = eval(data);
+				 	var c = document.getElementById('studentDataShow');
+					c.innerHTML=null;
+				 	datas=d;
+				 	for(var i in d){
+				 		c.innerHTML = c.innerHTML + '<li id="'+i+'" class="mui-table-view-cell">'+d[i].sno+"   "+d[i].sname+"   "+d[i].sex+'</li>';
+				 	}
+				 },'json');
+				 //注意，加载完新数据后，必须执行如下代码，注意：若为ajax请求，则需将如下代码放置在处理完ajax响应数据之后
+				 //没有更多内容了，endPulldown 传入true， 不再执行下拉刷新
+				 mui('#refreshContainer').pullRefresh().endPulldown();
+			}
+			
+			mui.plusReady(function () {
+				// var datas;
+			 //    mui.get('http://10.0.2.2:8080/student/C_queryStudent',function(data){
+			 //    	var d = eval(data);
+			 //    	var c = document.getElementById('studentDataShow');
+			 //    	datas=d;
+			 //    	for(var i in d){
+			 //    		c.innerHTML = c.innerHTML + '<li id="'+i+'" class="mui-table-view-cell">'+d[i].sno+"   "+d[i].sname+"   "+d[i].sex+'</li>';
+			 //    	}
+			 //    },'json');
+				
+				mui(document.body).on('tap','.mui-table-view-cell',function(){
+					var id = this.getAttribute('id');
+					console.log(id)
+					// var edit=plus.webview.open('edit.html','edit.html',{},"slide-in-bottom");
+					var d = datas
+					console.log(d);
+					for(var i in d){
+						if(id==i){
+							// plus.storage.setItem("student_id",d[i].id+"");
+							// plus.storage.setItem("student_sno",d[i].sno);
+							// plus.storage.setItem("student_sname",d[i].sname);
+							// plus.storage.setItem("student_sex",d[i].sex);
+							// console.log(d[i].id);
+							// console.log(d[i].sno);
+							// console.log(d[i].sname);
+							// console.log(d[i].sex);
+							// mui.fire(edit,'edit',{
+							// 	sno:d[i].sno,
+							// 	sname:d[i].sname,
+							// 	sex:d[i].sex
+							// 	});
+							mui.openWindow({
+								url:'edit.html',
+								id:'edit.html',
+								extras:{
+									sid:d[i].id,
+									sno:d[i].sno,
+									sname:d[i].sname,
+									sex:d[i].sex
+								}
+							})
+						}
+					}
+					
+				})
+			})
+			
+			
+			
+		</script>
+	</body>
+
+</html>
